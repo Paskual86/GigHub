@@ -40,4 +40,4 @@ steps:
       git config --global user.name "Pablo"
       git checkout master
       git add --all
-      git push https://%gt%@github.com/Paskual86/GigHub.git
+      git push --force https://%gt%@github.com/Paskual86/GigHub.git

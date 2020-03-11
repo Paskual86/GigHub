@@ -32,3 +32,12 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      git config --global user.email "pablosebastian.andrada@gmail.com"
+      git config --global user.name "Pablo"
+      git checkout master
+      git add --all
+      git push https://%gt%@github.com/Paskual86/GigHub.git

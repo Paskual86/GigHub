@@ -9,6 +9,8 @@
     padding-right: 15px;
 }
 
+
+
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
@@ -21,4 +23,83 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+/*Bootstrap Overrides*/
+.navbar-inverse {
+    background-color: #ff4342;
+    border-color: #ff4342;
+}
+
+    .navbar-inverse .navbar-nav > li > a {
+        color: #ffffff;
+    }
+
+    .navbar-inverse .navbar-brand {
+        color: #ffffff
+    }
+
+
+    .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+        background-color: #ff4342;
+    }
+
+.navbar-brand {
+    font-weight:700;
+}
+
+.dropdown-menu {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+/*
+    En ell tutorial, necesitan agregar esta linea para el color del ^ en el menu. En esta version no es necesario.
+.navbar-inverse .navbar-nav > .dropdown > a .caret {
+    color: #fff;
+    background-color: #080808;
+}*/
+
+    /*Incrementa el tamaño de las letras*/
+    body{
+        font-size: 17px;
+    }
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/*Incrementar la separacion horizontal de los edits*/
+.form-group {
+    margin-bottom: 20px;
+}
+
+/*Manejo de las propiedades del text box*/
+.form-control {
+    font-size: 17px;
+    padding: 20px 15px;
+    border-radius: 9px;
+}
+
+.form-control:focus {
+    border-color: #2196f3;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.btn {
+    font-size: 17px;
+    padding: 7px 20px;
+    border-radius: 9px;
 }

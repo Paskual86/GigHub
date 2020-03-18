@@ -194,13 +194,25 @@
     <Compile Include="Migrations\202003140216298_AddProperyFKGig.Designer.cs">
       <DependentUpon>202003140216298_AddProperyFKGig.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003181001184_AddNameToApplicationUser.cs" />
+    <Compile Include="Migrations\202003181001184_AddNameToApplicationUser.Designer.cs">
+      <DependentUpon>202003181001184_AddNameToApplicationUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="ViewModels\ExternalLoginConfirmationViewModel.cs" />
+    <Compile Include="ViewModels\ExternalLoginListViewModel.cs" />
+    <Compile Include="ViewModels\ForgotViewModel.cs" />
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\Gig.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
+    <Compile Include="ViewModels\ResetPasswordViewModel.cs" />
+    <Compile Include="ViewModels\SendCodeViewModel.cs" />
+    <Compile Include="ViewModels\VerifyCodeViewModel.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="ViewModels\RegisterViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\FutureDate.cs" />
@@ -296,6 +308,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003140216298_AddProperyFKGig.resx">
       <DependentUpon>202003140216298_AddProperyFKGig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003181001184_AddNameToApplicationUser.resx">
+      <DependentUpon>202003181001184_AddNameToApplicationUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

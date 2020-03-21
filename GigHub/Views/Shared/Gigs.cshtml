@@ -20,18 +20,20 @@
             <div class="details">
                 <span class="artist">
                     @gig.Artist.Name
-                    @if (Model.ShowActions) 
-                    { 
-                    <button data-gig-id="@gig.Id" class="btn btn-link btn-sm js-toggle-attendance">Following ?</button>
+                    @if (Model.ShowActions)
+                    {
+                        <button data-artist-id="@gig.ArtistId" class="btn btn-link btn-sm js-toggle-following">Following ?</button>
                     }
                 </span>
+                
                 <span class="genre">
                     @gig.Genre.Name
                 </span>
 
-                @if (Model.ShowActions) { 
+                @if (Model.ShowActions)
+                {
                     <button data-gig-id="@gig.Id" class="btn btn-default btn-sm pull-right js-toggle-attendance">Going ?</button>
-                }                
+                }
             </div>
         </li>
     }
@@ -46,6 +48,19 @@
                     $.post("/api/attendances", { GigId: button.attr("data-gig-id") })
                         .done(function () {
                             button.removeClass("btn-default").addClass("btn-info").text("Going");
+                        })
+                        .fail(function () {
+                            alert("Something Fail");
+                        });
+                });
+            });
+
+            $(document).ready(function () {
+                $(".js-toggle-following").click(function (e) {
+                    var button = $(e.target);
+                    $.post("/api/followings", { FolloweeId: button.attr("data-artist-id") })
+                        .done(function () {
+                            button.text("Following");
                         })
                         .fail(function () {
                             alert("Something Fail");

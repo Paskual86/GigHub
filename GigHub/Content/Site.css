@@ -115,7 +115,7 @@ h6,
 /*Manejo de las propiedades del text box*/
 .form-control {
     font-size: 17px;
-    padding: 20px 15px;
+    height: 44px;
     border-radius: 9px;
 }
 
@@ -178,3 +178,13 @@ h6,
         .gigs > li .details .genre {
             font-size: 15px;
         }
+
+    .gigs > li .actions {
+        font-size: 15px;
+        display: none;
+    }
+
+    /*Esto permite hacer que un boton aparezca y desaparezca. uso en el Form Mine*/
+    .gigs > li:hover .actions {
+        display: block;
+    }

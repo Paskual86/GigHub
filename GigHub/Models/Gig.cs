@@ -22,5 +22,7 @@ namespace GigHub.Models
         public Genre Genre { get; set; }
         [Required]
         public byte GenreId { get; set; }
+
+        public bool IsCanceled { get; set; }
     }
 }

@@ -26,7 +26,12 @@ namespace GigHub.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Attendance>().HasRequired(a => a.Gig).WithMany().WillCascadeOnDelete(false);
+            // En la propieddad WithMany, podes dejarla vacia si no tenes un enumerado en la clase
+            // relacionada. Sino, debes agregarlo a la relacion.
+            modelBuilder.Entity<Attendance>()
+                .HasRequired(a => a.Gig)
+                .WithMany(g => g.Attendances)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ApplicationUser>()
                 .HasMany(u => u.Followers)
@@ -40,7 +45,7 @@ namespace GigHub.Models
 
             modelBuilder.Entity<UserNotification>()
                 .HasRequired(f => f.User)
-                .WithMany()
+                .WithMany(au => au.UserNotifications)
                 .WillCascadeOnDelete(false);
 
             base.OnModelCreating(modelBuilder);

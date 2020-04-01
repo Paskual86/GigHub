@@ -18,10 +18,13 @@ namespace GigHub.Models
         public ICollection<Following> Followers { get; set; }
         public ICollection<Following> Followees { get; set; }
 
+        public ICollection<UserNotification> UserNotifications { get; set; }
+
         public ApplicationUser()
         {
             Followers = new Collection<Following>();
             Followees = new Collection<Following>();
+            UserNotifications = new Collection<UserNotification>();
         }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
@@ -30,6 +33,16 @@ namespace GigHub.Models
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
             return userIdentity;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="notification"></param>
+        public void Notify(Notification notification)
+        {
+            // Esto lo toma EF como un insert!
+            UserNotifications.Add(new UserNotification(this, notification));
         }
     }
 }

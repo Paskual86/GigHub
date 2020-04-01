@@ -82,6 +82,11 @@ namespace GigHub.Controllers
             return View("GigForm", viewModel);
         }
 
+        /// <summary>
+        /// Update Gig
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize]
         public ActionResult Edit(int id)
         {
@@ -114,16 +119,7 @@ namespace GigHub.Controllers
                 return View("GigForm", viewModel);
             }
 
-            var gig = new Gig
-            {
-                ArtistId = User.Identity.GetUserId(),
-                DateTime = viewModel.GetDateTime()
-                ,
-                GenreId = viewModel.Genre,
-                Venue = viewModel.Venue
-            };
-
-            _context.Gigs.Add(gig);
+            _context.Gigs.Add(Gig.New(User.Identity.GetUserId(), viewModel.GetDateTime(), viewModel.Genre, viewModel.Venue));
             _context.SaveChanges();
 
             return RedirectToAction("Mine", "Gigs");
@@ -135,17 +131,18 @@ namespace GigHub.Controllers
         public ActionResult Update(GigFormViewModel viewModel)
         {
             var userId = User.Identity.GetUserId();
+            
             if (!ModelState.IsValid)
             {
                 viewModel.Genres = _context.Genres.ToList();
                 return View("GigForm", viewModel);
             }
 
-            var gig = _context.Gigs.Single(g => g.Id == viewModel.Id && g.ArtistId == userId);
+            var gig = _context.Gigs
+                .Include(g => g.Attendances.Select(a => a.Attendee))
+                .Single(g => g.Id == viewModel.Id && g.ArtistId == userId);
 
-            gig.Venue = viewModel.Venue;
-            gig.DateTime = viewModel.GetDateTime();
-            gig.GenreId = viewModel.Genre;
+            gig.Modify(viewModel.Venue, viewModel.GetDateTime(), viewModel.Genre);
             
             _context.SaveChanges();
 

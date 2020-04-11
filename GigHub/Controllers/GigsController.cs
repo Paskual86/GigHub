@@ -68,7 +68,13 @@ namespace GigHub.Controllers
             var gigs = _context.Gigs.Where(g => g.ArtistId == userId && g.DateTime > DateTime.Now && !g.IsCanceled). Include(g => g.Genre).ToList();
             return (View(gigs));
         }
-
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Search(GigsViewModel viewModel) 
+        {
+            return RedirectToAction("Index", "Home", new { query = viewModel.SearchTerm });
+        }
 
         [Authorize]
         public ActionResult Create()

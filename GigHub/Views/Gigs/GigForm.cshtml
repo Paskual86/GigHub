@@ -11,7 +11,7 @@
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.Id)
     <div class="form-group">
-        @Html.LabelFor(m => m.Venue)
+        @Html.LabelFor(m => m.Venue, new { title="Lugar del evento" } )
         @Html.TextBoxFor(m => m.Venue, new { @class = "form-control", autofocus="autofocus" })
         @Html.ValidationMessageFor(m => m.Venue)
     </div>

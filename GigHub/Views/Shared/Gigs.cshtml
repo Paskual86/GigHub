@@ -30,7 +30,10 @@
             </div>
             <div class="details">
                 <span class="artist">
-                    @gig.Artist.Name
+                    <a href="@Url.Action("Details", "Gigs", new { id=gig.Id })" >
+                        @gig.Artist.Name
+                    </a>
+                    
                     @if (gig.IsCanceled) 
                     { 
                         <span class="label label-warning">Canceled</span>
@@ -48,7 +51,7 @@
 
                 @if (Model.ShowActions && !gig.IsCanceled)
                 {
-                    <button data-gig-id="@gig.Id" class="btn btn-default btn-sm pull-right js-toggle-attendance">Going ?</button>
+                    <button data-gig-id="@gig.Id" class="btn @(Model.Attendances.Contains(gig.Id)?"btn-info":"btn-default") btn-sm pull-right js-toggle-attendance">Going ?</button>
                 }
             </div>
         </li>
@@ -61,13 +64,30 @@
             $(document).ready(function () {
                 $(".js-toggle-attendance").click(function (e) {
                     var button = $(e.target);
-                    $.post("/api/attendances", { GigId: button.attr("data-gig-id") })
-                        .done(function () {
-                            button.removeClass("btn-default").addClass("btn-info").text("Going");
+                    if (button.hasClass("btn-default")) {
+                        $.post("/api/attendances", { GigId: button.attr("data-gig-id") })
+                            .done(function () {
+                                button.removeClass("btn-default").addClass("btn-info").text("Going");
+                            })
+                            .fail(function () {
+                                alert("Something Fail");
+                            });
+                    } else
+                    {
+                        $.ajax({
+                            url: "/api/attendances/" + button.attr("data-gig-id"),
+                            method:"DELETE"
                         })
-                        .fail(function () {
-                            alert("Something Fail");
-                        });
+                            .done(function ()
+                            {
+                                button.removeClass("btn-info").addClass("btn-default").text("Going?");
+                            }
+                        )
+                            .fail(function () {
+                                alert("Something Fail");
+                            })
+                    }
+                    
                 });
             });
 
@@ -77,6 +97,19 @@
                     $.post("/api/followings", { FolloweeId: button.attr("data-artist-id") })
                         .done(function () {
                             button.text("Following");
+                        })
+                        .fail(function () {
+                            alert("Something Fail");
+                        });
+                });
+            });
+
+            $(document).ready(function () {
+                $(".artist").click(function (e) {
+                    var button = $(e.target);
+                    location.replace("/Gigs/Details", { GigId: button.attr("data-gig-id") })
+                        .done(function () {
+                            button.removeClass("btn-default").addClass("btn-info").text("Going");
                         })
                         .fail(function () {
                             alert("Something Fail");

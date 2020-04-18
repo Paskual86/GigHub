@@ -1,7 +1,9 @@
 ﻿using GigHub.Models;
+using GigHub.Repositories;
 using GigHub.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -12,20 +14,19 @@ namespace GigHub.Controllers
     {
 
         private ApplicationDbContext _context;
+        private readonly AttendanceRepository _attendanceRepository;
 
         public HomeController()
         {
             _context = new ApplicationDbContext();
+            _attendanceRepository = new AttendanceRepository(_context);
         }
 
         public ActionResult Index(string query = null)
         {
             var userId = User.Identity.GetUserId();
 
-            var upcomingGigs = _context.Gigs
-                .Include(g => g.Artist)
-                .Include(g => g.Genre)
-                .Where(g => g.DateTime > DateTime.Now && !g.IsCanceled);
+            var upcomingGigs = GetUpcomingGigs();
 
             if (!String.IsNullOrWhiteSpace(query))
             {
@@ -34,8 +35,8 @@ namespace GigHub.Controllers
                 g.Venue.Contains(query));
             }
 
-            var attendances = _context.Attendances.Where(a => a.AttendeeId == userId && a.Gig.DateTime > DateTime.Now).ToList().ToLookup(a => a.GigId);
-            var followees = _context.Followings.Where(a => a.FollowerId == userId).ToList().ToLookup(a => a.FolloweeId);
+            var attendances = _attendanceRepository.GetFutureAttendances(userId).ToLookup(a => a.GigId);
+            var followees = GetFollowees(userId).ToLookup(a => a.FolloweeId);
 
             var viewModel = new GigsViewModel
             {
@@ -48,6 +49,19 @@ namespace GigHub.Controllers
             };
 
             return View("Gigs", viewModel);
+        }
+
+        private List<Following> GetFollowees(string userId)
+        {
+            return _context.Followings.Where(a => a.FollowerId == userId).ToList();
+        }
+
+        private IQueryable<Gig> GetUpcomingGigs()
+        {
+            return _context.Gigs
+                            .Include(g => g.Artist)
+                            .Include(g => g.Genre)
+                            .Where(g => g.DateTime > DateTime.Now && !g.IsCanceled);
         }
 
         public ActionResult About()

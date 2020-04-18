@@ -7,7 +7,7 @@ using System.Web.Http;
 
 namespace GigHub.Controllers.Api
 {
-
+    [Authorize]
     public class FollowingsController : ApiController
     {
         private ApplicationDbContext _context;
@@ -23,8 +23,7 @@ namespace GigHub.Controllers.Api
         /// <param name="gigId"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
-        public IHttpActionResult Attend(FollowingDto dto)
+        public IHttpActionResult Follow(FollowingDto dto)
         {
             var userId = User.Identity.GetUserId();
 
@@ -40,6 +39,24 @@ namespace GigHub.Controllers.Api
             };
 
             _context.Followings.Add(following);
+            _context.SaveChanges();
+            return Ok();
+        }
+
+        [HttpDelete]
+        
+        public IHttpActionResult UnFollow(string id)
+        {
+            var userId = User.Identity.GetUserId();
+
+            var following = _context.Followings.SingleOrDefault(a => a.FollowerId == userId && a.FolloweeId == id);
+
+            if (following == null) 
+            {
+                return NotFound();
+            }
+
+            _context.Followings.Remove(following);
             _context.SaveChanges();
             return Ok();
         }

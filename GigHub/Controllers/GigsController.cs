@@ -30,12 +30,15 @@ namespace GigHub.Controllers
             
             var attendances = _context.Attendances.Where(a => a.AttendeeId == userId && a.Gig.DateTime > DateTime.Now).ToList().ToLookup(a => a.GigId);
 
+            var followees = _context.Followings.Where(a => a.FollowerId == userId).ToList().ToLookup(a => a.FolloweeId);
+
             var viewModel = new GigsViewModel()
             {
                 UpcommingGigs = gigs,
                 ShowActions = User.Identity.IsAuthenticated,
                 Heading = "Gigs I'm Attending",
-                Attendances = attendances
+                Attendances = attendances,
+                Followees = followees
             };
 
             return View("Gigs", viewModel);

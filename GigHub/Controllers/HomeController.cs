@@ -1,10 +1,7 @@
-﻿using GigHub.Models;
-using GigHub.Repositories;
-using GigHub.ViewModels;
+﻿using GigHub.Core.ViewModels;
+using GigHub.Persistance;
 using Microsoft.AspNet.Identity;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -12,21 +9,23 @@ namespace GigHub.Controllers
 {
     public class HomeController : Controller
     {
-
-        private ApplicationDbContext _context;
-        private readonly AttendanceRepository _attendanceRepository;
-
-        public HomeController()
+        private readonly IUnitOfWork _unitOfWork;
+        
+        public HomeController(IUnitOfWork unitOfWork)
         {
-            _context = new ApplicationDbContext();
-            _attendanceRepository = new AttendanceRepository(_context);
+            _unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         public ActionResult Index(string query = null)
         {
             var userId = User.Identity.GetUserId();
 
-            var upcomingGigs = GetUpcomingGigs();
+            var upcomingGigs = _unitOfWork.Gigs.GetUpcomingGigs();
 
             if (!String.IsNullOrWhiteSpace(query))
             {
@@ -35,8 +34,9 @@ namespace GigHub.Controllers
                 g.Venue.Contains(query));
             }
 
-            var attendances = _attendanceRepository.GetFutureAttendances(userId).ToLookup(a => a.GigId);
-            var followees = GetFollowees(userId).ToLookup(a => a.FolloweeId);
+            var attendances = _unitOfWork.Attendances.GetFutureAttendances(userId).ToLookup(a => a.GigId);
+
+            var followees = _unitOfWork.Follow.GetFollowees(userId).ToLookup(a => a.FolloweeId);
 
             var viewModel = new GigsViewModel
             {
@@ -51,19 +51,10 @@ namespace GigHub.Controllers
             return View("Gigs", viewModel);
         }
 
-        private List<Following> GetFollowees(string userId)
-        {
-            return _context.Followings.Where(a => a.FollowerId == userId).ToList();
-        }
-
-        private IQueryable<Gig> GetUpcomingGigs()
-        {
-            return _context.Gigs
-                            .Include(g => g.Artist)
-                            .Include(g => g.Genre)
-                            .Where(g => g.DateTime > DateTime.Now && !g.IsCanceled);
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
@@ -71,6 +62,10 @@ namespace GigHub.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";

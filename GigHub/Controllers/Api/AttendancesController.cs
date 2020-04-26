@@ -1,5 +1,6 @@
-﻿using GigHub.Dtos;
-using GigHub.Models;
+﻿using GigHub.Core.Dtos;
+using GigHub.Core.Models;
+using GigHub.Persistance;
 using Microsoft.AspNet.Identity;
 using System.Linq;
 using System.Web.Http;
@@ -10,11 +11,11 @@ namespace GigHub.Controllers.Api
     [Authorize]
     public class AttendancesController : ApiController
     {
-        private ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AttendancesController()
+        public AttendancesController(IUnitOfWork unitOfWork)
         {
-            _context = new ApplicationDbContext();
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace GigHub.Controllers.Api
         {
             var userId = User.Identity.GetUserId();
             
-            if (_context.Attendances.Any(a => a.AttendeeId == userId && a.GigId == dto.GigId)) 
+            if (_unitOfWork.Attendances.GetAttendance(dto.GigId, userId).Any()) 
             {
                 return BadRequest("The attendance already exists");
             }
@@ -38,22 +39,27 @@ namespace GigHub.Controllers.Api
                 AttendeeId = userId
             };
 
-            _context.Attendances.Add(attendance);
-            _context.SaveChanges();
+            _unitOfWork.Attendances.Create(attendance);
+            _unitOfWork.Complete();
             return Ok();        
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public IHttpActionResult CancelAttend(int id)
         {
             var userId = User.Identity.GetUserId();
 
-            var attendance = _context.Attendances.Single(g => g.AttendeeId == userId && g.GigId == id);
+            var attendance = _unitOfWork.Attendances.GetAttendance(id, userId).FirstOrDefault();
             
             if (attendance == null) return NotFound();
-            
-            _context.Attendances.Remove(attendance);
-            _context.SaveChanges();
+
+            _unitOfWork.Attendances.Remove(attendance);
+            _unitOfWork.Complete();
 
             return Ok(id); // Devolver ok junto con el id removido, esto es una convesion.
         }

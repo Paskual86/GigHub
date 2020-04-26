@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using GigHub.App_Start;
-using GigHub.Dtos;
-using GigHub.Models;
+using GigHub.Core.Dtos;
+using GigHub.Persistance;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
 
@@ -15,11 +14,12 @@ namespace GigHub.Controllers.Api
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-
-        public NotificationsController()
+        public NotificationsController(IUnitOfWork unitOfWork)
         {
             _context = new ApplicationDbContext();
+            _unitOfWork = unitOfWork;
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
             _mapper = configuration.CreateMapper();
         }
@@ -30,14 +30,7 @@ namespace GigHub.Controllers.Api
         /// <returns></returns>
         public IEnumerable<NotificationDto> GetNewNotifications() 
         {
-            var userId = User.Identity.GetUserId();
-
-            var notifications = _context.UserNotifications
-                .Where(un => un.UserId == userId && !un.IsRead)
-                .Select(un => un.Notification)
-                .Include(n => n.Gig.Artist)
-                .ToList();
-            
+            var notifications = _unitOfWork.Notifications.GetNewNotifications(User.Identity.GetUserId());
             return notifications.Select(n => _mapper.Map<NotificationDto>(n));
         }
 
@@ -48,11 +41,8 @@ namespace GigHub.Controllers.Api
         [HttpPost]
         public IHttpActionResult MarkAsRead() 
         {
-            var userId = User.Identity.GetUserId();
-            var notifications = _context.UserNotifications.Where(un => un.UserId == userId && !un.IsRead).ToList();
-
-            notifications.ForEach(n => n.Read());
-            _context.SaveChanges();
+            _unitOfWork.Notifications.MarkAsRead(User.Identity.GetUserId());
+            _unitOfWork.Complete();
             return Ok();
         }
     }

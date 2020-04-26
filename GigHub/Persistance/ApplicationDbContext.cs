@@ -32,20 +32,14 @@ namespace GigHub.Persistance
             // relacionada. Sino, debes agregarlo a la relacion.
             modelBuilder.Configurations.Add(new GigConfiguration());
 
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(u => u.Followers)
-                .WithRequired(f => f.Follower)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Configurations.Add(new ApplicationUserConfiguration());
 
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(u => u.Followers)
-                .WithRequired(f => f.Followee)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Configurations.Add(new FollowingConfiguration());
+            modelBuilder.Configurations.Add(new AttendanceConfiguration());
 
-            modelBuilder.Entity<UserNotification>()
-                .HasRequired(f => f.User)
-                .WithMany(au => au.UserNotifications)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Configurations.Add(new GenreConfiguration());
+            modelBuilder.Configurations.Add(new NotificationConfiguration());
+            modelBuilder.Configurations.Add(new UserNotificationConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

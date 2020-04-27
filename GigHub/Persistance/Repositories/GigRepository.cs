@@ -10,13 +10,13 @@ namespace GigHub.Repositories
 {
     public class GigRepository : IGigRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
-        public GigRepository(ApplicationDbContext context)
+        public GigRepository(IApplicationDbContext context)
         {
             _context = context;
         }
@@ -35,7 +35,12 @@ namespace GigHub.Repositories
 
         public IEnumerable<Gig> GetFutureGigsWithGenre(string userId)
         {
-            return _context.Gigs.Where(g => g.ArtistId == userId && g.DateTime > DateTime.Now && !g.IsCanceled).Include(g => g.Genre).ToList();
+            return _context.Gigs
+                .Where(g => g.ArtistId == userId && 
+                            g.DateTime > DateTime.Now && 
+                            !g.IsCanceled)
+                .Include(g => g.Genre)
+                .ToList();
         }
 
         /// <summary>

@@ -53,7 +53,6 @@ namespace GigHub.Tests.Controllers.Api
         public void Cancel_ValidRequest_ShouldReturnOk()
         {
             var gig = new Gig { ArtistId = _userId };
-            gig.Id = 1;
             gig.Cancel();
             _mockRepository.Setup(r => r.GetGigWithAttendees(1)).Returns(gig);
             var result = _controller.Cancel(1);

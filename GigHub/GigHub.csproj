@@ -226,6 +226,7 @@
     <Compile Include="Persistance\EntityConfigurations\GigConfiguration.cs" />
     <Compile Include="Persistance\EntityConfigurations\NotificationConfiguration.cs" />
     <Compile Include="Persistance\EntityConfigurations\UserNotificationConfiguration.cs" />
+    <Compile Include="Persistance\IApplicationDbContext.cs" />
     <Compile Include="Persistance\Migrations\202003211256216_AddFollowing.cs" />
     <Compile Include="Persistance\Migrations\202003211256216_AddFollowing.Designer.cs">
       <DependentUpon>202003211256216_AddFollowing.cs</DependentUpon>

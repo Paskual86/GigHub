@@ -53,6 +53,7 @@ namespace GigHub.Controllers
             var gigs = _unitOfWork.Gigs.GetFutureGigsWithGenre(User.Identity.GetUserId());
             return (View(gigs));
         }
+        
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -1,4 +1,5 @@
 ﻿using System.Web.Optimization;
+using GigHub.App_Start; // for NUglifyJsMinify
 
 namespace GigHub
 {
@@ -14,12 +15,21 @@ namespace GigHub
                 "~/Scripts/app/controllers/gigDetailsController.js",
                 "~/Scripts/app/app.js"
                 ));
-            bundles.Add(new ScriptBundle("~/bundles/lib").Include(
+
+            // Use a plain Bundle so we control transforms (avoid ScriptBundle's built-in JsMinify)
+            var libBundle = new Bundle("~/bundles/lib");
+            libBundle.Include(
                         "~/Scripts/jquery-{version}.js",
                         "~/Scripts/underscore-min.js",
                         "~/Scripts/moment.js",
                         "~/Scripts/bootstrap.js",
-                      "~/Scripts/bootbox.min.js"));
+                        "~/Scripts/bootbox.min.js");
+
+            // Replace default transforms with NUglify-based minifier
+            libBundle.Transforms.Clear();
+            libBundle.Transforms.Add(new NUglifyJsMinify());
+
+            bundles.Add(libBundle);
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
